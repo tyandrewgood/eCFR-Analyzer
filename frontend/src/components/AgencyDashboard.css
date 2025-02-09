@@ -1,0 +1,37 @@
+/* src/components/AgencyDashboard.css */
+.agency-dashboard {
+    padding: 20px;
+  }
+  
+  .agency-dashboard h2 {
+    margin-bottom: 20px;
+  }
+  
+  .agency-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+  }
+  
+  .agency-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .agency-card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .agency-card h3 {
+    margin-top: 0;
+  }
+  
+  .metrics {
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+  
