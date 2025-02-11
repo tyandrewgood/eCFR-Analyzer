@@ -1,3 +1,4 @@
+// src/components/AgencyWordCountChart.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
@@ -10,6 +11,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import { API_BASE_URL } from '../config';  // Import API_BASE_URL from config
 
 // Register necessary Chart.js components
 ChartJS.register(
@@ -30,7 +32,7 @@ export default function AgencyWordCountChart({ data }) {
     if (!data) {
       setLoading(true);
       axios
-        .get('http://localhost:8091/agency_word_count', {
+        .get(`${API_BASE_URL}/agency_word_count`, {  // Use backticks for template literal
           params: { query: 'Regulations' }
         })
         .then((res) => {

@@ -1,5 +1,4 @@
 // src/pages/StatisticsPage.js
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -14,16 +13,18 @@ import {
 } from '@mui/material';
 import KeywordChart from '../components/KeywordChart';
 import AgencyWordCountChart from '../components/AgencyWordCountChart';
+import { API_BASE_URL } from '../config';  // Import API_BASE_URL from your config file
 
 export default function StatisticsPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Refresh handler calls the refresh endpoint and reloads the page upon success.
+  // (If you decide not to use the refresh functionality, you can keep this commented out.)
   const handleRefresh = () => {
     if (window.confirm('Refreshing may take some time. Continue?')) {
       axios
-        .post('http://localhost:8091/refresh_statistics', null, {
+        .post(`${API_BASE_URL}/refresh_statistics`, null, {
           params: { query: 'Regulations' },
         })
         .then((res) => {
@@ -39,7 +40,7 @@ export default function StatisticsPage() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8091/statistics', { params: { query: 'Regulations' } })
+      .get(`${API_BASE_URL}/statistics`, { params: { query: 'Regulations' } })
       .then((res) => {
         setStats(res.data);
         setLoading(false);
@@ -68,10 +69,11 @@ export default function StatisticsPage() {
 
   return (
     <Container sx={{ p: 4 }}>
-      {/* Header with Refresh Button */}
+      {/* Header with Refresh Button (if desired) */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h3">Statistics</Typography>
-        {/* <Button variant="outlined" color="primary" onClick={handleRefresh}>
+        {/* Uncomment the refresh button if you want to allow refreshing data:
+        <Button variant="outlined" color="primary" onClick={handleRefresh}>
           Refresh Data
         </Button> */}
       </Box>
@@ -110,14 +112,12 @@ export default function StatisticsPage() {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Typography variant="body1">
-              <strong>Min Word Count:</strong> {stats.min_word_count} (
-              {stats.min_agency})
+              <strong>Min Word Count:</strong> {stats.min_word_count} ({stats.min_agency})
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Typography variant="body1">
-              <strong>Max Word Count:</strong> {stats.max_word_count} (
-              {stats.max_agency})
+              <strong>Max Word Count:</strong> {stats.max_word_count} ({stats.max_agency})
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>

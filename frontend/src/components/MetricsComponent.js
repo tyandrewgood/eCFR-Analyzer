@@ -1,6 +1,7 @@
 // src/components/MetricsComponent.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config'; // Import the API base URL
 
 const MetricsComponent = ({ agency, query, startDate, endDate, changeTypes }) => {
   const [metrics, setMetrics] = useState(null);
@@ -18,7 +19,7 @@ const MetricsComponent = ({ agency, query, startDate, endDate, changeTypes }) =>
       params.change_types = changeTypes.join(',');
 
     axios
-      .get('http://localhost:8091/metrics', { params })
+      .get(`${API_BASE_URL}/metrics`, { params })  // Use backticks for proper interpolation
       .then((response) => {
         setMetrics(response.data);
       })

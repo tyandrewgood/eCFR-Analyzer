@@ -18,6 +18,7 @@ import {
 import { AccessTime, School, TextFields, HelpOutline } from '@mui/icons-material';
 import TimeSeriesChart from './TimeSeriesChart';
 import KeywordChart from './KeywordChart'; // Import the KeywordChart component
+import { API_BASE_URL } from '../config';  // Import the API_BASE_URL from your config file
 
 export default function DetailedAnalysis() {
   const { slug } = useParams();
@@ -32,7 +33,7 @@ export default function DetailedAnalysis() {
   const fetchMetrics = () => {
     setLoadingMetrics(true);
     axios
-      .get('http://localhost:8091/metrics', { params: { agency: slug, query: currentQuery } })
+      .get(`${API_BASE_URL}/metrics`, { params: { agency: slug, query: currentQuery } })
       .then((res) => setMetrics(res.data))
       .catch((err) => console.error('Error fetching metrics:', err))
       .finally(() => setLoadingMetrics(false));
@@ -42,7 +43,7 @@ export default function DetailedAnalysis() {
   const fetchHistory = () => {
     setLoadingHistory(true);
     axios
-      .get('http://localhost:8091/history', { params: { agency: slug, query: currentQuery } })
+      .get(`${API_BASE_URL}/history`, { params: { agency: slug, query: currentQuery } })
       .then((res) => setHistoryData(res.data))
       .catch((err) => console.error('Error fetching history:', err))
       .finally(() => setLoadingHistory(false));

@@ -6,6 +6,7 @@ import { Container, Typography, Grid, Box, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useNavigate } from 'react-router-dom';
 import AgencyCard from './AgencyCard';
+import { API_BASE_URL } from '../config';
 
 export default function AgencyDashboard() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function AgencyDashboard() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8091/agencies')
+      .get(`${API_BASE_URL}/agencies`)
       .then((res) => {
         const list = res.data.agencies || [];
         setAgencies(list);
@@ -47,7 +48,6 @@ export default function AgencyDashboard() {
         Agency Dashboard
       </Typography>
       
-      {/* Updated note with additional instructions */}
       <Typography variant="body2" color="text.secondary" paragraph>
         Filter agencies by name or jump directly to a known agency. Click on an agency to view detailed analytics.
       </Typography>

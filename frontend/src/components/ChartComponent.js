@@ -11,7 +11,9 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { API_BASE_URL } from '../config'; // Import the API_BASE_URL
 
+// Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ChartComponent = ({ agency, query, startDate, endDate, changeTypes }) => {
@@ -30,7 +32,7 @@ const ChartComponent = ({ agency, query, startDate, endDate, changeTypes }) => {
       params.change_types = changeTypes.join(',');
 
     axios
-      .get('http://localhost:8091/analyze', { params })
+      .get(`${API_BASE_URL}/analyze`, { params }) // Use template literal here
       .then((response) => {
         const data = response.data;
         setChartData({
