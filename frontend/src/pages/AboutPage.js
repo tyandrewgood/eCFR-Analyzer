@@ -1,10 +1,9 @@
-// src/pages/LearnMorePage.js
-
+// src/AboutPage.js
 import React from 'react';
 import { Container, Box, Typography, Grid, Card, CardContent, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export default function LearnMorePage() {
+export default function AboutPage() {
   return (
     <Container maxWidth="lg" sx={{ mt: 8 }}>
       <Box textAlign="center" mb={4}>
@@ -12,60 +11,54 @@ export default function LearnMorePage() {
           Learn More About the eCFR Analyzer
         </Typography>
         <Typography variant="h6" color="text.secondary" paragraph>
-          Discover how our advanced analytics and interactive dashboards provide insights
-          into Federal Regulations.
+          Discover how our tool provides insights into Federal Regulations through interactive dashboards and aggregated metrics.
         </Typography>
       </Box>
 
-      {/* Example of a 3-column layout describing features */}
       <Grid container spacing={4}>
-        {/* Feature 1 */}
+        {/* Feature 1: Agency Overview */}
         <Grid item xs={12} sm={6} md={4}>
-          <Card>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h5" gutterBottom>
                 Agency Overview
               </Typography>
               <Typography variant="body2" paragraph>
-                Explore an interactive dashboard of all eCFR agencies, each with a 
-                quick summary and click-through to detailed metrics.
+                Explore an interactive dashboard with a quick summary for each agency.
               </Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Feature 2 */}
+        {/* Feature 2: Advanced Metrics */}
         <Grid item xs={12} sm={6} md={4}>
-          <Card>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h5" gutterBottom>
                 Advanced Metrics
               </Typography>
               <Typography variant="body2" paragraph>
-                Dive deeper with readability scores, average sentence length, and top 
-                keyword analysis for each agency’s regulations.
+                Analyze readability, average sentence length, and keyword data for detailed insights.
               </Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Feature 3 */}
+        {/* Feature 3: Aggregated Statistics */}
         <Grid item xs={12} sm={6} md={4}>
-          <Card>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h5" gutterBottom>
-                Historical Trends
+                Aggregated Statistics
               </Typography>
               <Typography variant="body2" paragraph>
-                Visualize word count and other metrics over time with our time-series 
-                charts, tracking regulatory changes historically.
+                View overall metrics—total words, top 10 words, and average counts. Last updated info and refresh option included.
               </Typography>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
 
-      {/* CTA Buttons */}
       <Box textAlign="center" mt={6}>
         <Button
           variant="contained"
@@ -77,8 +70,14 @@ export default function LearnMorePage() {
         >
           View Dashboard
         </Button>
-        <Button variant="outlined" color="secondary" size="large" component={Link} to="/">
-          Return Home
+        <Button
+          variant="outlined"
+          color="secondary"
+          size="large"
+          component={Link}
+          to="/statistics"
+        >
+          View Statistics
         </Button>
       </Box>
     </Container>

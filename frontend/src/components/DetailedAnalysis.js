@@ -1,71 +1,85 @@
 // src/components/DetailedAnalysis.js
-import React, { useEffect, useMemo, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import {
+  Box,
+  Typography,
+  Paper,
+  TextField,
+  Button,
+  Divider,
+  Grid,
+  CircularProgress,
+  Stack,
+  IconButton,
+  Tooltip
+} from '@mui/material';
+import { AccessTime, School, TextFields, HelpOutline } from '@mui/icons-material';
 import TimeSeriesChart from './TimeSeriesChart';
+import KeywordChart from './KeywordChart'; // Import the KeywordChart component
 
 export default function DetailedAnalysis() {
   const { slug } = useParams();
-  const [searchParams] = useSearchParams();
-
+  const [query, setQuery] = useState('');
+  const [currentQuery, setCurrentQuery] = useState('Regulations');
   const [metrics, setMetrics] = useState(null);
   const [historyData, setHistoryData] = useState([]);
   const [loadingMetrics, setLoadingMetrics] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(true);
 
-  // parse filters from query string
-  const query = searchParams.get('query') || 'Regulations';
-  const startDate = searchParams.get('startDate') || '';
-  const endDate = searchParams.get('endDate') || '';
-  const changeTypesString = searchParams.get('changeTypes') || '';
-
-  // memoize array creation to avoid re-triggering on every render
-  const changeTypes = useMemo(() => {
-    return changeTypesString ? changeTypesString.split(',') : [];
-  }, [changeTypesString]);
-
-  // 1. Fetch Extended Metrics from /metrics
-  useEffect(() => {
+  // Function to fetch metrics data from the backend
+  const fetchMetrics = () => {
     setLoadingMetrics(true);
-    const params = { agency: slug, query };
-    if (startDate) params.start_date = startDate;
-    if (endDate) params.end_date = endDate;
-    if (changeTypes.length > 0) params.change_types = changeTypes.join(',');
-
     axios
-      .get('http://localhost:8091/metrics', { params })
-      .then((res) => {
-        setMetrics(res.data);
-      })
-      .catch((err) => console.error('Error fetching extended metrics:', err))
+      .get('http://localhost:8091/metrics', { params: { agency: slug, query: currentQuery } })
+      .then((res) => setMetrics(res.data))
+      .catch((err) => console.error('Error fetching metrics:', err))
       .finally(() => setLoadingMetrics(false));
-  }, [slug, query, startDate, endDate, changeTypes]);
+  };
 
-  // 2. Fetch Historical Data from /history (time-series)
-  useEffect(() => {
+  // Function to fetch historical data from the backend
+  const fetchHistory = () => {
     setLoadingHistory(true);
-    const params = { agency: slug, query };
-    // you can also pass startDate/endDate if your /history endpoint supports it
     axios
-      .get('http://localhost:8091/history', { params })
-      .then((res) => {
-        setHistoryData(res.data); // expect array of { date, wordCount }
-      })
-      .catch((err) => console.error('Error fetching history data:', err))
+      .get('http://localhost:8091/history', { params: { agency: slug, query: currentQuery } })
+      .then((res) => setHistoryData(res.data))
+      .catch((err) => console.error('Error fetching history:', err))
       .finally(() => setLoadingHistory(false));
-  }, [slug, query]);
+  };
 
-  // display spinners if either is loading
+  // Fetch data when the component mounts or when slug/currentQuery changes
+  useEffect(() => {
+    fetchMetrics();
+    fetchHistory();
+  }, [slug, currentQuery]);
+
+  // Update the query to trigger new API requests
+  const handleQuerySubmit = () => {
+    setCurrentQuery(query || 'Regulations');
+  };
+
+  // Show a loading spinner while data is loading
   if (loadingMetrics || loadingHistory) {
-    return <p>Loading Detailed Analysis...</p>;
+    return (
+      <Box sx={{ p: 4, textAlign: 'center' }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
-  // If no metrics returned, show error
+  // Show an error message if metrics are not available
   if (!metrics) {
-    return <p>Could not load extended metrics for {slug}.</p>;
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography color="error">
+          Could not load metrics for agency: {slug}
+        </Typography>
+      </Box>
+    );
   }
 
-  // destructure the advanced metrics
+  // Destructure the metrics for easier use in the UI
   const {
     result_count,
     word_count,
@@ -75,49 +89,138 @@ export default function DetailedAnalysis() {
   } = metrics;
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Detailed Analysis: {slug}</h2>
-      <p>
-        <strong>Result Count:</strong> {result_count}
-      </p>
-      <p>
-        <strong>Word Count:</strong> {word_count}
-      </p>
-      <p>
-        <strong>Average Sentence Length:</strong> {average_sentence_length?.toFixed(2)}
-      </p>
+    <Box sx={{ p: { xs: 2, md: 4 } }}>
+      {/* Page Header */}
+      <Typography variant="h4" gutterBottom>
+        Detailed Analysis: {slug}
+      </Typography>
 
-      {readability && (
-        <>
-          <h3>Readability Metrics:</h3>
-          <p>
-            <strong>Flesch Reading Ease:</strong> {readability.flesch_reading_ease?.toFixed(2)}
-          </p>
-          <p>
-            <strong>Flesch-Kincaid Grade:</strong> {readability.flesch_kincaid_grade?.toFixed(2)}
-          </p>
-        </>
-      )}
+      {/* Query Input and Submission */}
+      <Paper variant="outlined" sx={{ p: 3, mb: 4 }}>
+        <TextField
+          label="Word/Phrase to Analyze"
+          variant="outlined"
+          placeholder="e.g., Regulations"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          fullWidth
+        />
+        <Button variant="contained" onClick={handleQuerySubmit} sx={{ mt: 2 }}>
+          Analyze
+        </Button>
+      </Paper>
 
-      {keywords && keywords.length > 0 && (
-        <>
-          <h3>Top Keywords:</h3>
-          <ul>
-            {keywords.map(([word, count], idx) => (
-              <li key={idx}>
-                {word}: {count}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      {/* Total Word Count Section */}
+      <Paper variant="outlined" sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Total Word Count
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Typography variant="h3" color="primary">
+          {word_count}
+        </Typography>
+      </Paper>
 
-      <h3>Historical Trend</h3>
-      {historyData.length > 0 ? (
-        <TimeSeriesChart data={historyData} />
-      ) : (
-        <p>No historical data available</p>
-      )}
-    </div>
+      {/* Result Count Section */}
+      <Paper variant="outlined" sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Search and Result Count
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Typography variant="body1">
+          <strong>Result Count:</strong> {result_count}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Use the form above to analyze specific words or phrases within this dataset.
+        </Typography>
+      </Paper>
+
+      {/* Advanced Metrics Section */}
+      <Paper variant="outlined" sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Advanced Text Metrics
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Stack spacing={2}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <AccessTime />
+            <Typography>
+              <strong>Average Sentence Length:</strong> {average_sentence_length?.toFixed(2)}
+            </Typography>
+            <Tooltip title="Average words per sentence. Higher values often indicate complexity." arrow>
+              <IconButton size="small" color="primary" aria-label="info">
+                <HelpOutline />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <School />
+            <Typography>
+              <strong>Flesch Reading Ease:</strong> {readability?.flesch_reading_ease?.toFixed(2)}
+            </Typography>
+            <Tooltip title="Measures readability: Higher scores are easier to read. Negative values indicate complexity." arrow>
+              <IconButton size="small" color="primary" aria-label="info">
+                <HelpOutline />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <TextFields />
+            <Typography>
+              <strong>Flesch-Kincaid Grade:</strong> {readability?.flesch_kincaid_grade?.toFixed(2)}
+            </Typography>
+            <Tooltip title="Approximate U.S. grade level required to understand the text." arrow>
+              <IconButton size="small" color="primary" aria-label="info">
+                <HelpOutline />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Stack>
+      </Paper>
+
+      {/* Top Keywords Section */}
+      <Paper variant="outlined" sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Top Keywords
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Grid container spacing={2}>
+          {keywords.map(([word, count], idx) => (
+            <Grid item xs={6} sm={4} md={3} key={idx}>
+              <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
+                <Typography variant="h6">{word}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {count} occurrences
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Paper>
+
+      {/* Optional: Keywords Visualization Section */}
+      <Paper variant="outlined" sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Keywords Visualization
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <KeywordChart keywords={keywords} />
+      </Paper>
+
+      {/* Historical Trends Section */}
+      <Paper variant="outlined" sx={{ p: 3 }}>
+        <Typography variant="h5" gutterBottom>
+          Historical Trends
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        {historyData.length > 0 ? (
+          <TimeSeriesChart data={historyData} />
+        ) : (
+          <Typography color="text.secondary">
+            No historical data available.
+          </Typography>
+        )}
+      </Paper>
+    </Box>
   );
 }

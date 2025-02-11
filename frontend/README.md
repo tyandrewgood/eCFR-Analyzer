@@ -1,70 +1,114 @@
-# Getting Started with Create React App
+# eCFR Analyzer Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The eCFR Analyzer Frontend is a React-based web application that visualizes the analysis of Federal Regulations data provided by the backend. It allows users to interact with and explore aggregated statistics, detailed agency metrics, and historical trends derived from the eCFR API.
 
-## Available Scripts
+------------------------------------------------------------
+TABLE OF CONTENTS
+------------------------------------------------------------
+1. Overview
+2. Features
+3. Technology Stack
+4. Project Structure
+5. Setup Instructions
+6. Available Views and Components
+7. Deployment
+8. Notes
+9. License
+10. Contact
 
-In the project directory, you can run:
+------------------------------------------------------------
+1. OVERVIEW
+------------------------------------------------------------
+The eCFR Analyzer Frontend enables users to explore and interact with regulatory data through a user-friendly interface. Data is fetched from the backend API, which aggregates content from the electronic Code of Federal Regulations (eCFR) – including data from all agencies and their child agencies (via recursive processing). The frontend presents overall aggregated statistics, detailed agency analysis, interactive charts, and historical trends.
 
-### `yarn start`
+------------------------------------------------------------
+2. FEATURES
+------------------------------------------------------------
+- **Interactive Dashboard:**  
+  Explore aggregated statistics such as total word count, agency count, average/median word counts, and more.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Detailed Agency Analysis:**  
+  View detailed metrics for individual agencies including result count, total word count, readability scores (Flesch Reading Ease, Flesch-Kincaid Grade), average sentence length, and top keywords.  
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Visualizations:**  
+  Display charts for keywords (using a KeywordChart component) and per‑agency word counts (using an AgencyWordCountChart component), as well as historical trends (using a TimeSeriesChart component).
 
-### `yarn test`
+- **Caching Information:**  
+  The frontend indicates when the statistics were last updated using data from the backend cache.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+------------------------------------------------------------
+3. TECHNOLOGY STACK
+------------------------------------------------------------
+- **React:** For building the user interface.
+- **React Router:** For client-side routing.
+- **Material UI:** For UI components and styling.
+- **Chart.js (via react-chartjs-2):** For rendering interactive charts.
+- **Axios:** For making HTTP requests to the backend API.
+- **Other:** Standard JavaScript/React libraries.
 
-### `yarn build`
+------------------------------------------------------------
+4. PROJECT STRUCTURE
+------------------------------------------------------------
+The project is organized as follows:
+  
+frontend/
+├── public/
+│   ├── index.html                # Main HTML file; includes static assets
+│   └── ...                       # Other public assets (images, favicon, etc.)
+├── src/
+│   ├── components/               # Reusable React components
+│   │   ├── DetailedAnalysis.js   # Detailed analysis view for a selected agency
+│   │   ├── KeywordChart.js       # Chart component to display top keywords
+│   │   ├── AgencyWordCountChart.js  # Chart component for per-agency word counts
+│   │   ├── TimeSeriesChart.js    # Chart component to show historical trends
+│   │   └── ...                   # Additional reusable components
+│   ├── pages/                    # Page-level components
+│   │   ├── StatisticsPage.js     # Displays aggregated statistics
+│   │   ├── HomePage.js           # Homepage with an overview of the project
+│   │   ├── AboutPage.js          # Information about the project
+│   │   └── ...                   # Other page components
+│   ├── App.js                    # Main application component (includes routing)
+│   ├── index.js                  # Entry point for the React application
+│   └── ...                       # Additional assets, helper files, and styles
+├── package.json                  # Lists project dependencies and scripts
+└── README.txt                    # This file (Project documentation)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+------------------------------------------------------------
+5. SETUP INSTRUCTIONS
+------------------------------------------------------------
+1. **Clone the Repository and Navigate to the Frontend Directory:**
+2. **Install Dependencies:**
+Use Yarn or npm to install the project dependencies:
+`yarn install`
+3. **Run the Frontend:**
+Start the development server:
+`yarn start`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The app will typically run at [http://localhost:3000](http://localhost:3000).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+------------------------------------------------------------
+6. AVAILABLE VIEWS AND COMPONENTS
+------------------------------------------------------------
+- **HomePage:**  
+Provides an overview of the project and navigation links to key sections.
 
-### `yarn eject`
+- **DetailedAnalysis:**  
+Fetches and displays detailed metrics for a selected agency. It calls the backend `/metrics` endpoint and shows key values such as word count, readability scores, top keywords, and historical trends.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **StatisticsPage:**  
+Fetches overall aggregated statistics and per‑agency word counts from the backend (via `/statistics` and `/agency_word_count` endpoints). Displays overall metrics, a top keywords chart, and an Agency Word Count bar chart.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Additional Components:**  
+- **KeywordChart:** Visualizes top keywords using Chart.js.
+- **AgencyWordCountChart:** Renders a bar chart of per‑agency word counts.
+- **TimeSeriesChart:** Displays historical trends.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+------------------------------------------------------------
+7. NOTES
+------------------------------------------------------------
+- **Backend Dependency:**  
+Ensure that the backend is running (typically on [http://localhost:8091](http://localhost:8091)) so that the frontend can successfully fetch data.
+- **API Integration:**  
+The frontend makes HTTP requests to the backend using Axios. If the backend URL changes, update the endpoints accordingly (consider using a configuration file such as `src/config.js`).
+- **Caching:**  
+The statistics page relies on cached JSON data from the backend. A note is displayed showing when the data was last updated.

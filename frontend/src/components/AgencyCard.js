@@ -1,26 +1,33 @@
 // src/components/AgencyCard.js
 import React from 'react';
+import { Card, CardContent, Tooltip, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function AgencyCard({ agency, filters }) {
-  const { query, startDate, endDate, changeTypes } = filters;
-  
-  const params = new URLSearchParams();
-  if (query) params.append('query', query);
-  if (startDate) params.append('startDate', startDate);
-  if (endDate) params.append('endDate', endDate);
-  if (changeTypes.length > 0) {
-    params.append('changeTypes', changeTypes.join(','));
-  }
+  const { display_name, name, short_name, slug } = agency;
 
-  const detailUrl = `/agency/${agency.slug}?${params.toString()}`;
+  // tooltip text
+  const tooltipText = short_name
+    ? `Agency short name: ${short_name}. Click for metrics.`
+    : 'Click for metrics.';
+
+  // detail URL uses slug
+  const detailUrl = `/agency/${slug}`;
 
   return (
-    <div className="agency-card">
-      <Link to={detailUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <h3>{agency.display_name || agency.name}</h3>
-        <p>Click to view detailed metrics...</p>
-      </Link>
-    </div>
+    <Tooltip title={tooltipText} arrow>
+      <Card variant="outlined" sx={{ cursor: 'pointer', height: '100%' }}>
+        <Link to={detailUrl} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              {display_name || name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Learn more about this agency’s regulations...
+            </Typography>
+          </CardContent>
+        </Link>
+      </Card>
+    </Tooltip>
   );
 }
