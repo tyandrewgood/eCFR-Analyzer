@@ -29,3 +29,8 @@ Setup & Deployment
 
 2. **Frontend Setup:**  
    See `/frontend/README.md` for instructions on installing dependencies, configuring, and running the React application.
+
+**Deployment Links:**
+
+- **Backend:** [https://ecfr-analyzer.onrender.com](https://ecfr-analyzer.onrender.com)
+- **Frontend (Website):** [https://ecrf-analyzer.vercel.app/](https://ecrf-analyzer.vercel.app/)
