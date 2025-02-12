@@ -32,5 +32,10 @@ Setup & Deployment
 
 **Deployment Links:**
 
-- **Backend:** [https://ecfr-analyzer.onrender.com](https://ecfr-analyzer.onrender.com)
+- **Backend:** [https://ecfr-analyzer.onrender.com/docs](https://ecfr-analyzer.onrender.com/docs)
 - **Frontend (Website):** [https://ecrf-analyzer.vercel.app/](https://ecrf-analyzer.vercel.app/)
+
+  *Disclaimer:*
+  The backend is hosted on a free Render.com plan. As a result, if the service has been idle, it may take up to approximately 1 minute to wake up and respond.
+
+  
